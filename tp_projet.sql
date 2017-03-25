@@ -212,4 +212,37 @@ from TPCSV_INS_BRUT
 where NUM_ETABLISSEMENT != 'UNIV'
 group by annee,CODE_DISCIPLINE
 order by annee);
-   
+
+
+---exo7
+---1)le nombre total de réponses qu’il y a eu à l’enquête 2011
+select nom_domaine,annee, sum(NB_REPONSES)
+from TPCSV_INS_BRUT
+where annee='2011' and NUM_ETABLISSEMENT != 'UNIV' and
+CODE_DISCIPLINE not in (select min(code_discipline)
+                    from TPCSV_INS_BRUT
+                    group by nom_domaine
+                    having count(distinct CODE_DISCIPLINE)>1)
+group by nom_domaine,annee;
+
+/*
+Nom de domaine			  			Annee    Nb de reponses(requete sql)    Nb de reponses(doc stats pdf)   Taux d'erreur(%)
+Sciences, technologies et santé	  	2011		8397						17633								52	    
+Lettres, langues, arts	          	2011		2665						2881								7
+Droit, économie et gestion	  		2011		11488						18267								37
+Masters enseignement	          	2011		6103						6082								0,3
+Sciences humaines et sociales	  	2011		6219						8097								23
+*/
+
+---2)
+select distinct NOM_ETABLISSEMENT
+from TPCSV_ins_BRUT
+where NUM_ETABLISSEMENT not in (select identifiant
+                                from TPCSV_eta_BRUT);
+/* liste etablissement apparaissant dans TPCSV_ins_BRUT mais pas dans TPCSV_eta_BRUT
+Bordeaux 4 - Montesquieu
+Montpellier 1
+Bordeaux 2 - Victor Segalen
+Bordeaux 1 - Sciences technologies
+Montpellier 2 - Sciences techniques du Languedoc
+*/
