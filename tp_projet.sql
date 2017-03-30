@@ -466,6 +466,11 @@ Montpellier 2 - Sciences techniques du Languedoc
   
   --EXERCICE 11
   --1)
+  ---verifier que les 7 chiffres d'etablissement sont un identifiant
+  select distinct LIBELLE
+from TPCSV_ETA_BRUT
+group by libelle
+having count(SUBSTR(identifiant,1,7))>1;
   --SECTEUR ETABLISSEMENT N'ADMET QUE DEUX VALEURS 
   SELECT COUNT(DISTINCT SECTEUR_ETABLISSEMENT)
   FROM TPCSV_ETA_BRUT
