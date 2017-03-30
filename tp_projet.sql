@@ -233,12 +233,13 @@ having count(distinct CODE_DISCIPLINE)>1;
  WHERE NOM_DISCIPLINE LIKE 'Ensemble%'
    
 --3)
-select (nb_rep_disc_fic-nb_rep_disc_non_fic) as diff from
+create or replace view domaine_aggregats as
+select distinct NOM_DOMAINE,annee,nb_rep_disc_fic,nb_rep_disc_non_fic,(nb_rep_disc_fic-nb_rep_disc_non_fic) as diff from
 (select distinct NOM_DOMAINE,annee,min(CODE_DISCIPLINE) as disc_fic, count(NB_REPONSES) as nb_rep_disc_fic
 from TPCSV_INS_BRUT
 group by NOM_DOMAINE,annee
 having count (distinct CODE_DISCIPLINE)>1
-order by NOM_DOMAINE),
+order by NOM_DOMAINE) natural join
 (select distinct NOM_DOMAINE,annee,count(NB_REPONSES) as nb_rep_disc_non_fic
 from TPCSV_INS_BRUT
 group by NOM_DOMAINE,annee
@@ -268,6 +269,13 @@ where NUM_ETABLISSEMENT != 'UNIV'
 group by annee,CODE_DISCIPLINE
 order by annee);
 
+--3)
+select distinct annee from univ_aggregats where delta_univ=0;
+/*resultats
+2010
+2011
+*/
+
 
 ---exo7
 ---1)le nombre total de réponses qu’il y a eu à l’enquête 2011
@@ -282,11 +290,11 @@ group by nom_domaine,annee;
 
 /*
 Nom de domaine			  			Annee    Nb de reponses(requete sql)    Nb de reponses(doc stats pdf)   Taux d'erreur(%)
-Sciences, technologies et santé	  	2011		8397						17633								52	    
-Lettres, langues, arts	          	2011		2665						2881								7
-Droit, économie et gestion	  		2011		11488						18267								37
-Masters enseignement	          	2011		6103						6082								0,3
-Sciences humaines et sociales	  	2011		6219						8097								23
+Sciences, technologies et santé	  	2011		8397						8382								0,17	    
+Lettres, langues, arts	          	2011		2665						2664								0,037
+Droit, économie et gestion	  		2011		11488						11465								0,2
+Masters enseignement	          	2011		6103						6082								0,34
+Sciences humaines et sociales	  	2011		6219						6215								0,064
 */
 
 ---2)
