@@ -520,7 +520,7 @@ having count(SUBSTR(identifiant,1,7))>1;
   --2)
 drop table tpcsv_eta;
 create table tpcsv_eta(
-id_etablissement number(8) not null primary key,
+id_etablissement VARCHAR2(28 BYTE) not null primary key,
 num_etablissement VARCHAR2(28 BYTE) unique,
 LIBELLE_ETABLISSEMENT VARCHAR2(128 BYTE),
 SIGLE_ETABLISSEMENT VARCHAR2(28 BYTE),
