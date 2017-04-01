@@ -174,6 +174,8 @@ CREATE TABLE "TPCSV_INS_BRUT" (
    (SELECT COUNT(*)
    FROM (SELECT DISTINCT CODE_DISCIPLINE,NOM_DOMAINE,CODE_DOMAINE,NOM_DISCIPLINE
          FROM TPCSV_INS_BRUT))
+		 
+	--3)clé minimale : code_discipline,code_domaine
    --exercice 4 --
    --1
    SELECT DISTINCT NOM_DISCIPLINE
@@ -539,3 +541,19 @@ insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,
 insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,code_departement) values('0331765','0331765P','Bordeaux 2 - victor Segalen','D033');
 insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,code_departement) values('0341088','0341088Y','Montpellier 2 - Sciences techniques du Languedoc','D034');
 insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,code_departement) values('0331764','0331764N','Bordeaux 1 - Sciences technologies','D033');
+
+--exo 12
+--1)
+set serveroutput on
+
+CREATE OR REPLACE FUNCTION isNumber( v_chaine IN varchar2 )
+RETURN NUMBER
+IS
+  BEGIN
+    RETURN to_number(v_chaine) ;
+  END;
+
+declare
+begin
+DBMS_OUTPUT.PUT_LINE(isNumber('1270'));
+end;
