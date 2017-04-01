@@ -514,3 +514,28 @@ having count(SUBSTR(identifiant,1,7))>1;
   --SECTEUR ETABLISSEMENT N'ADMET QUE DEUX VALEURS 
   SELECT COUNT(DISTINCT SECTEUR_ETABLISSEMENT)
   FROM TPCSV_ETA_BRUT
+  
+  --2)
+drop table tpcsv_eta;
+create table tpcsv_eta(
+id_etablissement number(8) not null primary key,
+num_etablissement VARCHAR2(28 BYTE) unique,
+LIBELLE_ETABLISSEMENT VARCHAR2(128 BYTE),
+SIGLE_ETABLISSEMENT VARCHAR2(28 BYTE),
+TYPE_ETABLISSEMENT VARCHAR2(128 BYTE),
+SECTEUR_ETABLISSEMENT VARCHAR2(26 BYTE),
+SITE_INTERNET VARCHAR2(128 BYTE),
+CODE_DEPARTEMENT VARCHAR2(26 BYTE),
+STATUT_JURIDIQUE_COURT VARCHAR2(26 BYTE)
+);
+
+--3)
+insert into TPCSV_ETA
+select SUBSTR(identifiant,1,7),identifiant,LIBELLE,SIGLE,TYPE_ETABLISSEMENT,SECTEUR_ETABLISSEMENT,SITE_INTERNET,CODE_DEPARTEMENT,STATUT_JURIDIQUE_COURT
+from TPCSV_ETA_BRUT;
+
+insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,code_departement) values('0332929','0332929E','Bordeaux 4 - Montesquieu','D033');
+insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,code_departement) values('0341087','0332929X','Montpellier 1','D034');
+insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,code_departement) values('0331765','0331765P','Bordeaux 2 - victor Segalen','D033');
+insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,code_departement) values('0341088','0341088Y','Montpellier 2 - Sciences techniques du Languedoc','D034');
+insert into TPCSV_ETA (id_etablissement,NUM_ETABLISSEMENT,libelle_etablissement,code_departement) values('0331764','0331764N','Bordeaux 1 - Sciences technologies','D033');
