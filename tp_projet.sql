@@ -97,6 +97,32 @@ CREATE TABLE "TPCSV_INS_BRUT" (
 	"TAUX_FEMMES" VARCHAR2(26 BYTE)
    )  ;
    
+   --exercice 2
+--1) 198 identifiants dans la table tpcsv_eta_brut
+select count(distinct IDENTIFIANT) 
+from TPCSV_ETA_BRUT;
+
+select identifiant, count(libelle) 
+from TPCSV_ETA_BRUT
+group by identifiant
+having count(LIBELLE)>1;
+
+--2)
+
+delete from TPCSV_ETA_BRUT
+where IDENTIFIANT is null;
+
+--3)
+--libelle unique:
+select libelle, count(libelle)
+from TPCSV_ETA_BRUT
+group by libelle;
+
+--sigle:
+select *
+from TPCSV_ETA_BRUT t1, TPCSV_ETA_BRUT t2 
+where t1.sigle is not null and t2.sigle is not null and t1.sigle = t2.sigle and t1.identifiant!=t2.identifiant;
+   
    --Exercice 3 --
    --nombre de tuple--
    SELECT COUNT (*)
@@ -193,32 +219,6 @@ CREATE TABLE "TPCSV_INS_BRUT" (
    FROM TPCSV_INS_BRUT 
    WHERE CODE_DISCIPLINE = 'disc19' OR CODE_DISCIPLINE = 'disc20')
    
- --exercice 2
---1) 198 identifiants dans la table tpcsv_eta_brut
-select count(distinct IDENTIFIANT) 
-from TPCSV_ETA_BRUT;
-
-select identifiant, count(libelle) 
-from TPCSV_ETA_BRUT
-group by identifiant
-having count(LIBELLE)>1;
-
---2)
-
-delete from TPCSV_ETA_BRUT
-where IDENTIFIANT is null;
-
---3)
---libelle unique:
-select libelle, count(libelle)
-from TPCSV_ETA_BRUT
-group by libelle;
-
---sigle:
-select *
-from TPCSV_ETA_BRUT t1, TPCSV_ETA_BRUT t2 
-where t1.sigle is not null and t2.sigle is not null and t1.sigle = t2.sigle and t1.identifiant!=t2.identifiant;
-
 
 
 ---exo 5
@@ -557,3 +557,41 @@ declare
 begin
 DBMS_OUTPUT.PUT_LINE(isNumber('1270'));
 end;
+
+  --2)
+
+--REGION -> SALAIRE_NET_MEDIAN_REGION vrai 
+    (SELECT COUNT(*)
+   FROM (SELECT DISTINCT REGION
+         FROM TPCSV_ETA_BRUT t1 INNER JOIN TPCSV_INS_BRUT t2 ON t1.CODE_ACADEMIE = t2.CODE_ACADEMIE))
+         MINUS
+   (SELECT COUNT(*)
+   FROM (SELECT DISTINCT t1.REGION,t2.SALAIRE_NET_MEDIAN_REGION
+         FROM TPCSV_ETA_BRUT t1 INNER JOIN TPCSV_INS_BRUT t2 ON t1.CODE_ACADEMIE = t2.CODE_ACADEMIE
+         WHERE ANNEE = '2010'));
+         
+--REGION ->TAUX_CHOMAGE_REGIONAL VRAI
+(SELECT COUNT(*)
+   FROM (SELECT DISTINCT REGION
+         FROM TPCSV_ETA_BRUT t1 INNER JOIN TPCSV_INS_BRUT t2 ON t1.CODE_ACADEMIE = t2.CODE_ACADEMIE))
+         MINUS
+   (SELECT COUNT(*)
+   FROM (SELECT DISTINCT t1.REGION,t2.TAUX_CHOMAGE_REGIONAL
+         FROM TPCSV_ETA_BRUT t1 INNER JOIN TPCSV_INS_BRUT t2 ON t1.CODE_ACADEMIE = t2.CODE_ACADEMIE
+         WHERE ANNEE = '2010'));
+        
+--3) i il ne sert à rien de tester si les statistiques SALAIRE_NET_MEDIAN_REGION et TAUX_CHOMAGE_REGIONAL dépendent fonctionnellement de l’académie ou du département car on sait déjà qu'ils dépendent de region or region dépend de code region et code region code academie et code departement dépendent de code region 
+
+  
+  
+  --EXERCICE 14
+--4)
+(SELECT DISTINCT NOM_ETABLISSEMENT,NOM_DOMAINE
+      FROM TPCSV_INS_BRUT 
+      WHERE ANNEE = '2011'
+      GROUP BY NOM_ETABLISSEMENT,NOM_DOMAINE)
+ MINUS
+(SELECT DISTINCT NOM_ETABLISSEMENT,NOM_DOMAINE
+ FROM TPCSV_INS_BRUT
+ WHERE ANNEE < '2011'
+ GROUP BY NOM_ETABLISSEMENT,NOM_DOMAINE) 
