@@ -113,6 +113,13 @@ delete from TPCSV_ETA_BRUT
 where IDENTIFIANT is null;
 
 --3)
+--IDENTIFIANT est une clef 
+(SELECT COUNT(*)
+   FROM (SELECT DISTINCT IDENTIFIANT
+         FROM TPCSV_ETA_BRUT))
+         MINUS
+   (SELECT DISTINCT COUNT(*)
+   FROM TPCSV_ETA_BRUT);
 --libelle unique:
 select libelle, count(libelle)
 from TPCSV_ETA_BRUT
@@ -581,7 +588,18 @@ end;
          WHERE ANNEE = '2010'));
         
 --3) i il ne sert à rien de tester si les statistiques SALAIRE_NET_MEDIAN_REGION et TAUX_CHOMAGE_REGIONAL dépendent fonctionnellement de l’académie ou du département car on sait déjà qu'ils dépendent de region or region dépend de code region et code region code academie et code departement dépendent de code region 
+--4)
+DROP TABLE TPCSV_REGION_STATS;
+  
+CREATE TABLE TPCSV_REGION_STATS(
+TAUX_CHOMAGE_REGIONAL VARCHAR2(26 BYTE), 
+SALAIRE_NET_MEDIAN_REGION VARCHAR2(20 BYTE),
+REGION VARCHAR2(128 BYTE),
+FOREIGN KEY (REGION) REFERENCES TPCSV_ETA_BRUT(REGION) ON DELETE SET NULL);
 
+INSERT INTO TPCSV_REGION_STATS
+SELECT DISTINCT t2.TAUX_CHOMAGE_REGIONAL,t2.SALAIRE_NET_MEDIAN_REGION,t1.REGION
+FROM TPCSV_ETA_BRUT t1 INNER JOIN TPCSV_INS_BRUT t2 ON t1.CODE_ACADEMIE = t2.CODE_ACADEMIE
   
   
   --EXERCICE 14
